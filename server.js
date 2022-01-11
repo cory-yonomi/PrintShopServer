@@ -1,5 +1,6 @@
 // require necessary NPM packages
 const express = require('express')
+
 const mongoose = require('mongoose')
 const cors = require('cors')
 
@@ -7,6 +8,7 @@ const cors = require('cors')
 const userRoutes = require('./app/routes/user_routes')
 const customerRoutes = require('./app/routes/customer_routes')
 const jobRoutes = require('./app/routes/job_routes')
+const dataRoutes = require('./app/routes/data_routes')
 // require middleware
 const errorHandler = require('./lib/error_handler')
 const replaceToken = require('./lib/replace_token')
@@ -46,6 +48,8 @@ app.use(
 // adding PORT= to your env file will be necessary for deployment
 const port = process.env.PORT || serverDevPort
 
+
+
 // this middleware makes it so the client can use the Rails convention
 // of `Authorization: Token token=<token>` OR the Express convention of
 // `Authorization: Bearer <token>`
@@ -65,9 +69,11 @@ app.use(express.urlencoded({ extended: true }))
 app.use(requestLogger)
 
 // register route files
+
 app.use(userRoutes)
 app.use(customerRoutes)
 app.use(jobRoutes)
+app.use(dataRoutes)
 // register error handling middleware
 // note that this comes after the route middlewares, because it needs to be
 // passed any error messages from them
