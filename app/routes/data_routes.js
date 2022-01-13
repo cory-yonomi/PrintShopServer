@@ -33,18 +33,55 @@ const schema = buildSchema(`
         phone: String
     }
 
-    type Job {
+    input CustomerInput {
+        _id: String
+        company: String
+        contactName: String
+        email: String
+        phone: String
+    }
+    
+    input JobInput {
+        _id: String
+        item: String
+        media: String
+        height: Float
+        width: Float
+        quantity: Int
+        dueDate: String
+        notes: String
+        customer: CustomerInput
+    }
 
+    type Job {
+        _id: String
+        item: String
+        media: String
+        height: Float
+        width: Float
+        quantity: Int
+        dueDate: String
+        notes: String
+        customer: Customer
     }
 
     type Project {
-        
+        _id: String
+        name: String
+        jobs: [Job]
+        notes: String
+        dueDate: String
+        customer: Customer
     }
 
     type Query {
-        hello: String
         customers: [Customer]
         customer(company: String): Customer
+        jobs: [Job]
+  }
+
+  type Mutation {
+      createJob(input: JobInput): Job
   }
 `)
 
@@ -59,6 +96,17 @@ const root = {
     customer: (args) => {
         console.log(args)
          return Customer.findOne({company: args.company})    
+    },
+    jobs: () => {
+        return Job.find({})
+    },
+    createJob: (args) => {
+        console.log(args)
+        return Job.create(args.input).then(foundCustomer => {
+            foundCustomer.height = Number(foundCustomer.height)
+            foundCustomer.width = Number(foundCustomer.width)
+            console.log(foundCustomer)
+        })
     }
 }
 
