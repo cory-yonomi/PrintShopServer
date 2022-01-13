@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const job = require('./job')
+const customer = require('./customer')
 
 const projectSchema = new mongoose.Schema(
 	{
@@ -7,8 +8,12 @@ const projectSchema = new mongoose.Schema(
 			type: String,
 			required: true
 		},
+		customer: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: customer
+		},
 		jobs: [{
-            type: ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: job
         }],
         notes: String,
@@ -16,10 +21,6 @@ const projectSchema = new mongoose.Schema(
 			type: Date,
 			required: true,
         },
-        customer: {
-            type: ObjectId,
-            ref: customer
-        }
 	},
 	{
 		timestamps: true,

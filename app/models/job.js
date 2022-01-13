@@ -30,7 +30,7 @@ const jobSchema = new mongoose.Schema(
         },
         notes: String,
         customer: {
-            type: ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: customer
         }
 	},
