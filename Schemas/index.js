@@ -8,7 +8,7 @@ const CustomerType = new GraphQLObjectType({
     fields: () => ({
       _id: { type: GraphQLID },
       company: { type: GraphQLString },
-      contact: { type: GraphQLString },
+      contactName: { type: GraphQLString },
       email: { type: GraphQLString },
       phone: { type: GraphQLString },
     }),
@@ -45,6 +45,7 @@ const JobType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: "RootQueryType",
     fields: {
+        // MAIN READS (all of type, one by ID)
         customers: {
             type: new GraphQLList(CustomerType),
             resolve(parent, args) {
@@ -68,15 +69,29 @@ const RootQuery = new GraphQLObjectType({
             type: ProjectType,
             args: { _id: { type: GraphQLID } },
             resolve(parent, { _id }) {
-                return Project.findById({_id})
+                return Project.findById(_id)
+            }
+        },
+        jobs: {
+            type: new GraphQLList(JobType),
+            resolve(parent, args) {
+                return Job.find({})
+            }
+        },
+        job: {
+            type: JobType,
+            resolve(parent, { _id }) {
+                return Job.findById(_id)
             }
         }
     },
 })
 
+// All possible data mutations: Creates, edits and deletes
 const Mutation = new GraphQLObjectType({
     name: "Mutation",
     fields: {
+        // CREATIONS
         createCustomer: {
             type: CustomerType,
             args: {
@@ -131,6 +146,53 @@ const Mutation = new GraphQLObjectType({
                     dueDate: args.dueDate,
                     notes: args.notes,
                     customer: args.customer
+                })
+            }
+        },
+        // DELETIONS
+        deleteCustomer: {
+            type: CustomerType,
+            args: {
+                _id: { type: GraphQLID }
+            },
+            resolve(parent, { _id }) {
+                return Customer.findByIdAndDelete(_id)
+            }
+        },
+        deleteProject: {
+            type: ProjectType,
+            args: {
+                _id: { type: GraphQLID }
+            },
+            resolve(parent, { _id }) {
+                return Project.findByIdAndDelete(_id)
+            }
+        },
+        deleteJob: {
+            type: JobType,
+            args: {
+                _id: { type: GraphQLID }
+            },
+            resolve(parent, { _id }) {
+                return Job.findByIdAndDelete(_id)
+            }
+        },
+        // UPDATES
+        editCustomer: {
+            type: CustomerType,
+            args: {
+                _id: { type: GraphQLID },
+                company: { type: GraphQLString },
+                contactName: { type: GraphQLString },
+                email: { type: GraphQLString },
+                phone: { type: GraphQLString }
+            },
+            resolve(parent, args) {
+                return Customer.findByIdAndUpdate({ _id: args._id }, {
+                    company: args.company,
+                    contactName: args.contactName,
+                    email: args.email,
+                    phone: args.phone
                 })
             }
         }
