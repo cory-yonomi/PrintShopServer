@@ -17,14 +17,7 @@ const customerSchema = new mongoose.Schema(
         phone: String
 	},
 	{
-		timestamps: true,
-		// toObject: {
-		// 	// remove `hashedPassword` field when we call `.toObject`
-		// 	transform: (_doc, user) => {
-		// 		delete user.hashedPassword
-		// 		return user
-		// 	},
-		// },
+		timestamps: true
 	}
 )
 

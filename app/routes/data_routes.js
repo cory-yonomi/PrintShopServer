@@ -5,7 +5,7 @@ const crypto = require('crypto')
 const passport = require('passport')
 // bcrypt docs: https://github.com/kelektiv/node.bcrypt.js
 const bcrypt = require('bcrypt')
-const schema = require('../../Schemas/index')
+const schema = require('../models/Schemas/index')
 const { graphqlHTTP } = require('express-graphql')
 // see above for explanation of "salting", 10 rounds is recommended
 const bcryptSaltRounds = 10

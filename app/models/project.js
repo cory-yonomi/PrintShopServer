@@ -19,18 +19,12 @@ const projectSchema = new mongoose.Schema(
         notes: String,
         dueDate: {
 			type: Date,
-			required: true,
-        },
+			// required: true,
+		},
+		location: String
 	},
 	{
-		timestamps: true,
-		// toObject: {
-		// 	// remove `hashedPassword` field when we call `.toObject`
-		// 	transform: (_doc, user) => {
-		// 		delete user.hashedPassword
-		// 		return user
-		// 	},
-		// },
+		timestamps: true
 	}
 )
 

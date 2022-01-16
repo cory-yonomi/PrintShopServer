@@ -1,6 +1,7 @@
 const { Decimal128, ObjectId } = require('mongodb')
 const mongoose = require('mongoose')
 const customer = require('./customer')
+const project = require('./project')
 
 const jobSchema = new mongoose.Schema(
 	{
@@ -32,17 +33,15 @@ const jobSchema = new mongoose.Schema(
         customer: {
             type: mongoose.Schema.Types.ObjectId,
             ref: customer
-        }
+		},
+		// project: {
+		// 	type: mongoose.Schema.Types.ObjectId,
+		// 	ref: project
+		// },
+		location: String
 	},
 	{
-		timestamps: true,
-		// toObject: {
-		// 	// remove `hashedPassword` field when we call `.toObject`
-		// 	transform: (_doc, user) => {
-		// 		delete user.hashedPassword
-		// 		return user
-		// 	},
-		// },
+		timestamps: true
 	}
 )
 

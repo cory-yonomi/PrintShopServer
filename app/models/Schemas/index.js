@@ -1,7 +1,7 @@
-const { GraphQLString, GraphQLID, GraphQLList, GraphQLObjectType, GraphQLSchema } = require('graphql')
-const Customer = require('../app/models/customer')
-const Project = require('../app/models/project')
-const Job = require('../app/models/job')
+const { GraphQLString, GraphQLID, GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat } = require('graphql')
+const Customer = require('../customer')
+const Project = require('../project')
+const Job = require('../job')
 
 const CustomerType = new GraphQLObjectType({
     name: "Customer",
@@ -19,9 +19,9 @@ const ProjectType = new GraphQLObjectType({
     fields: () => ({
       _id: { type: GraphQLID },
       name: { type: GraphQLString },
+      customer: { type: CustomerType },
       jobs: { type: new GraphQLList(JobType) },
       dueDate: { type: GraphQLString },
-      customer: { type: CustomerType },
     }),
 })
 
@@ -31,9 +31,9 @@ const JobType = new GraphQLObjectType({
         _id: { type: GraphQLID },
         item: { type: GraphQLString },
         media: { type: GraphQLString },
-        height: { type: GraphQLString },
-        width: { type: GraphQLString },
-        quantity: { type: GraphQLString },
+        height: { type: GraphQLFloat },
+        width: { type: GraphQLFloat },
+        quantity: { type: GraphQLInt },
         dueDate: { type: GraphQLString },
         notes: { type: GraphQLString },
         customer: { type: CustomerType },
@@ -62,7 +62,7 @@ const RootQuery = new GraphQLObjectType({
         projects: {
             type: new GraphQLList(ProjectType),
             resolve(parent, args) {
-              return Project.find({})  
+              return Project.find({}).populate('customer')  
             }
         },
         project: {
@@ -75,7 +75,7 @@ const RootQuery = new GraphQLObjectType({
         jobs: {
             type: new GraphQLList(JobType),
             resolve(parent, args) {
-                return Job.find({})
+                return Job.find({}).populate('customer')
             }
         },
         job: {
@@ -113,14 +113,16 @@ const Mutation = new GraphQLObjectType({
             type: ProjectType,
             args: {
                 name: { type: GraphQLString },
-                dueDate: { type: GraphQLString },
                 customer: { type: GraphQLID },
+                notes: {type: GraphQLString},
+                dueDate: { type: GraphQLString }
             },
             resolve(parent, args) {
                 return Project.create({
                     name: args.name,
-                    dueDate: args.date,
-                    customer: args.customer
+                    customer: args.customer,
+                    notes: args.notes,
+                    dueDate: args.dueDate
                 })
             }
         },
@@ -129,9 +131,9 @@ const Mutation = new GraphQLObjectType({
             args: {
                 item: { type: GraphQLString },
                 media: { type: GraphQLString },
-                height: { type: GraphQLString },
-                width: { type: GraphQLString },
-                quantity: { type: GraphQLString },
+                height: { type: GraphQLFloat },
+                width: { type: GraphQLFloat },
+                quantity: { type: GraphQLInt },
                 dueDate: { type: GraphQLString },
                 notes: { type: GraphQLString },
                 customer: { type: GraphQLID }
