@@ -1,7 +1,24 @@
-const { GraphQLString, GraphQLID, GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat } = require('graphql')
+const { GraphQLString, GraphQLID, GraphQLList, GraphQLObjectType, GraphQLSchema, GraphQLInt, GraphQLFloat, GraphQLScalarType } = require('graphql')
 const Customer = require('../customer')
 const Project = require('../project')
 const Job = require('../job')
+
+const dateScalar = new GraphQLScalarType({
+    name: 'Date',
+    description: 'Date custom scalar type',
+    serialize(value) {
+      return value.getTime(); // Convert outgoing Date to integer for JSON
+    },
+    parseValue(value) {
+      return new Date(value); // Convert incoming integer to Date
+    },
+    parseLiteral(ast) {
+      if (ast.kind === Kind.INT) {
+        return new Date(parseInt(ast.value, 10)); // Convert hard-coded AST string to integer and then to Date
+      }
+      return null; // Invalid hard-coded value (not an integer)
+    },
+  })
 
 const CustomerType = new GraphQLObjectType({
     name: "Customer",
@@ -21,7 +38,7 @@ const ProjectType = new GraphQLObjectType({
       name: { type: GraphQLString },
       customer: { type: CustomerType },
       jobs: { type: new GraphQLList(JobType) },
-      dueDate: { type: GraphQLString },
+      dueDate: { type: dateScalar },
     }),
 })
 
@@ -34,7 +51,7 @@ const JobType = new GraphQLObjectType({
         height: { type: GraphQLFloat },
         width: { type: GraphQLFloat },
         quantity: { type: GraphQLInt },
-        dueDate: { type: GraphQLString },
+        dueDate: { type: dateScalar },
         notes: { type: GraphQLString },
         customer: { type: CustomerType },
 
@@ -115,7 +132,7 @@ const Mutation = new GraphQLObjectType({
                 name: { type: GraphQLString },
                 customer: { type: GraphQLID },
                 notes: {type: GraphQLString},
-                dueDate: { type: GraphQLString }
+                dueDate: { type: dateScalar }
             },
             resolve(parent, args) {
                 return Project.create({
@@ -134,7 +151,7 @@ const Mutation = new GraphQLObjectType({
                 height: { type: GraphQLFloat },
                 width: { type: GraphQLFloat },
                 quantity: { type: GraphQLInt },
-                dueDate: { type: GraphQLString },
+                dueDate: { type: dateScalar },
                 notes: { type: GraphQLString },
                 customer: { type: GraphQLID }
             },
