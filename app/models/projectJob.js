@@ -1,9 +1,7 @@
 const { Decimal128, ObjectId } = require('mongodb')
 const mongoose = require('mongoose')
-const customer = require('./customer')
-const project = require('./project')
 
-const jobSchema = new mongoose.Schema(
+const projectJobSchema = new mongoose.Schema(
 	{
 		item: {
 			type: String,
@@ -25,15 +23,7 @@ const jobSchema = new mongoose.Schema(
             type: Number,
             required: true
         },
-        dueDate: {
-			type: Date,
-			required: true,
-        },
         notes: String,
-        customer: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: customer
-		},
 		location: String
 	},
 	{
@@ -41,4 +31,4 @@ const jobSchema = new mongoose.Schema(
 	}
 )
 
-module.exports = mongoose.model('Job', jobSchema)
+module.exports = projectJobSchema
